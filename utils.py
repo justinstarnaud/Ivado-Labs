@@ -44,11 +44,11 @@ def linear_regression(X,y):
         'fit_intercept': [True, False],
         'copy_X' : [True, False]
     }
-    train_view_model(X, y, LinearRegression(), param_grid)
+    return train_view_model(X, y, LinearRegression(), param_grid)
 
 def knn_regressor(X, y):
     param_grid = {'n_neighbors': [2, 3, 4, 5, 6, 7, 8, 9, 10], 'weights': ['uniform', 'distance']}
-    train_view_model(X, y, KNeighborsRegressor(), param_grid, False)
+    return train_view_model(X, y, KNeighborsRegressor(), param_grid, False)
 
 def decision_tree_regressor(X, y):
     param_grid = {
@@ -57,7 +57,7 @@ def decision_tree_regressor(X, y):
         'min_samples_split': [2, 5, 10],
         'min_samples_leaf': [1, 2, 4]
     }
-    train_view_model(X, y, DecisionTreeRegressor(), param_grid, False)
+    return train_view_model(X, y, DecisionTreeRegressor(), param_grid, False)
 
 
 def train_view_model(X, y, model, param_grid, plot=True):
@@ -75,21 +75,23 @@ def train_view_model(X, y, model, param_grid, plot=True):
     mse = mean_squared_error(y_test, test_predictions)
     print(f'Mean Squared Error on Test Set: {mse}')
 
-    # View model results on test set
-    plt.scatter(X_test, y_test, color='blue', label='True data')
-    plt.scatter(X_test, test_predictions, color='red', label='Predictions')
-    if plot: 
-        plt.plot(X_test, test_predictions, color='green', linewidth=2, label='Regression')
-    plt.title(f'{type(best_model).__name__} test set results (90/10)')
-    plt.xlabel('Population')
-    plt.ylabel('Amount of visitors')
-    plt.legend()
-    plt.show()
+    title = f'{type(model).__name__} results on test set'
+    view_data(X_test, y_test, title, test_predictions, plot)
 
+    return best_model
 
-def scatter_data(X,y):
+def predict_view_model(X, y, model, plot=True):
+    predictions = model.predict(X)
+    title = f'{type(model).__name__} museum visitors predictions'
+    view_data(X, y, title, predictions, plot)
+
+def view_data(X,y, title, predictions=None, plot=False):
     plt.scatter(X, y, color='blue', label='True data')
-    plt.title('Visitors vs population')
+    if predictions is not None:
+        plt.scatter(X, predictions, color='red', label='Predictions')
+        if plot: 
+            plt.plot(X, predictions, color='green', linewidth=2, label='Regression')
+    plt.title(title)
     plt.xlabel('Population')
     plt.ylabel('Amount of visitor')
     plt.legend()
