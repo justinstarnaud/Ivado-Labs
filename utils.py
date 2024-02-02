@@ -72,8 +72,8 @@ def train_view_model(X, y, model, param_grid, plot=True):
 
     test_predictions = best_model.predict(X_test)
 
-    mse = mean_squared_error(y_test, test_predictions)
-    print(f'Mean Squared Error on Test Set: {mse}')
+    rmse = mean_squared_error(y_test, test_predictions)**0.5
+    print(f'Root mean Squared Error on Test Set: {rmse}')
 
     title = f'{type(model).__name__} results on test set'
     view_data(X_test, y_test, title, test_predictions, plot)
